@@ -9,9 +9,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
 
     - name: Checkout code
@@ -22,8 +19,9 @@ jobs:
       with:
         distribution: temurin
         java-version: '17'
+        cache: maven
 
-    - name: Build application
+    - name: Build Spring Boot App
       run: mvn clean package -DskipTests
 
     - name: Deploy to EC2
@@ -33,10 +31,24 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_KEY }}
         script: |
+
+          echo "Connecting to server..."
+
           cd Spring-security
+
+          echo "Pull latest code..."
           git pull origin main
+
+          echo "Building project..."
           mvn clean package -DskipTests
+
+          echo "Stopping previous app..."
           pkill -f 'java -jar' || true
+
+          echo "Finding jar file..."
           JAR=$(ls target/*.jar | head -n 1)
-          echo "Running $JAR"
+
+          echo "Starting new application..."
           nohup java -jar $JAR > app.log 2>&1 &
+
+          echo "Deployment finished!"
