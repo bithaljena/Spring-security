@@ -37,4 +37,6 @@ jobs:
           git pull origin main
           mvn clean package -DskipTests
           pkill java || true
-          nohup java -jar target/*.jar > app.log 2>&1 &
+          JAR=$(ls target/*.jar | head -n 1)
+          echo "Running $JAR"
+          nohup java -jar $JAR > app.log 2>&1 &
