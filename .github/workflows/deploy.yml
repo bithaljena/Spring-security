@@ -36,7 +36,7 @@ jobs:
           cd Spring-security
           git pull origin main
           mvn clean package -DskipTests
-          pkill java || true
+          pkill -f 'java -jar' || true
           JAR=$(ls target/*.jar | head -n 1)
           echo "Running $JAR"
           nohup java -jar $JAR > app.log 2>&1 &
