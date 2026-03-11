@@ -9,7 +9,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET = "mysecretmysecretmysecretmysecret";
+    private final String SECRET = "itshould_be_dynamic_value";
 
     private Key key() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
